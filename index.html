@@ -300,7 +300,14 @@
     }
 
     function updateScene() {
-        const hA = parseFloat(document.getElementById('heightA').value)||158, hB = parseFloat(document.getElementById('heightB').value)||171.5;
+        //負の身長や巨大過ぎる身長を排除
+        //const hA = parseFloat(document.getElementById('heightA').value)||158, hB = parseFloat(document.getElementById('heightB').value)||171.5;
+        const hA_san = (parseFloat(document.getElementById('heightA').value) < 40.0)? 40.0 : ((parseFloat(document.getElementById('heightA').value) > 300.0)? 300.0 : parseFloat(document.getElementById('heightA').value));
+        // const hA = parseFloat(document.getElementById('heightA').value) || 158.0;
+        const hA = hA_san;
+        const hB_san = (parseFloat(document.getElementById('heightB').value) < 40.0)? 40.0 : ((parseFloat(document.getElementById('heightB').value) > 300.0)? 300.0 : parseFloat(document.getElementById('heightB').value));
+        const hB = hB_san;
+        // const hB = parseFloat(document.getElementById('heightB').value) || 171.5;
         const armAngleX = parseFloat(document.getElementById('armPos').value) || -1.45;
 
         if(personA) walkGroup.remove(personA); if(personB) walkGroup.remove(personB);
@@ -347,9 +354,9 @@
             if(currentView === 'A') { personA.headParts.visible = false; personA.nameTag.visible = false; }
             if(currentView === 'B') { personB.headParts.visible = false; personB.nameTag.visible = false; }
         }
-
+        //身長差が非数の場合は0.0cm表示に
         document.getElementById('info').innerHTML = `
-            <div class="info-row"><span class="info-label">📏 身長差</span><span class="info-value">${Math.abs(hA-hB).toFixed(1)}<span class="unit">cm</span></span></div>
+            <div class="info-row"><span class="info-label">📏 身長差</span><span class="info-value">${(isNaN(Math.abs(hA-hB).toFixed(1)) )? 0.0 : Math.abs(hA-hB).toFixed(1)}<span class="unit">cm</span></span></div>
         `;
     }
 
@@ -436,8 +443,13 @@
     function shareToX() {
         const nA = document.getElementById('nameA').value || 'A';
         const nB = document.getElementById('nameB').value || 'B';
-        const hA = parseFloat(document.getElementById('heightA').value) || 158.0;
-        const hB = parseFloat(document.getElementById('heightB').value) || 171.5;
+        //負の身長や巨大過ぎる身長を排除
+        const hA_san = (parseFloat(document.getElementById('heightA').value) < 40.0)? 40.0 : ((parseFloat(document.getElementById('heightA').value) > 300.0)? 300.0 : parseFloat(document.getElementById('heightA').value));
+        // const hA = parseFloat(document.getElementById('heightA').value) || 158.0;
+        const hA = hA_san;
+        const hB_san = (parseFloat(document.getElementById('heightA').value) < 40.0)? 40.0 : ((parseFloat(document.getElementById('heightA').value) > 300.0)? 300.0 : parseFloat(document.getElementById('heightA').value));
+        const hB = hB_san;
+        // const hB = parseFloat(document.getElementById('heightB').value) || 171.5;
         const text = `${nA}(${hA.toFixed(1)}cm)と${nB}(${hB.toFixed(1)}cm)の床ドンシチュエーション！\n#床ドンシミュレーター\n`;
         window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`, '_blank');
     }
